@@ -664,6 +664,34 @@ console.log(seats);
 //         console.log("File has been written successfully.");
 //     }
 // });
-function getSeat(passengers){
+
+let obj = {
+    bus: { start: 1, end: 30 },
+    eco1: { start: 31, end: 90 },
+    vip: { start: 91, end: 102 },
+    eco2: { start: 103, end: 162 },
+    mature: { start: 163, end: 180 }
+}
+
+function getSeat(passengers, type, seniorPassenger){
+
+    let arr = {};
+    let s = [];
+    let counter = 0;
+
+    let start = obj[type].start
+    let end = obj[type].end
+    if(passengers == seniorPassenger){
+        start = obj.eco1.start;
+        end = obj.mature.end;
+    }
+
+    for(let i = start;i<=end;i++){
+        if(seats[i].passengerId || seats[i].broken){
+            continue;
+        }else{
+            s.push(seats[i].seat);
+        }
+    }
 
 }
