@@ -692,6 +692,30 @@ function getSeat(passengers, type, seniorPassenger){
         }else{
             s.push(seats[i].seat);
         }
+
+        if(passengers > 1){
+            counter++;
+            if(counter != s.length){
+                arr[counter-1] = s;
+                s = [];
+                counter = 0;
+                continue;
+            }
+
+            let n = Object.keys(arr);
+            let f = n.filter(d=> d == passengers);
+            if(f){
+                return arr[f[0]];
+            }
+
+        }else{
+            if(seats[i].column == "B" || seats[i].column == "E"){
+                continue;
+            }else{
+                return seats[i].seat;
+            }
+            return s[0];
+        }
     }
 
 }
