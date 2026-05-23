@@ -673,7 +673,7 @@ let obj = {
     mature: { start: 163, end: 180 }
 }
 
-function getSeat(passengers, type, seniorPassenger){
+function getSeat(passengers, type, seniorPassenger) {
 
     let arr = {};
     let s = [];
@@ -681,41 +681,61 @@ function getSeat(passengers, type, seniorPassenger){
 
     let start = obj[type].start
     let end = obj[type].end
-    if(passengers == seniorPassenger){
+    if (passengers == seniorPassenger) {
         start = obj.eco1.start;
         end = obj.mature.end;
     }
 
-    for(let i = start;i<=end;i++){
-        if(seats[i].passengerId || seats[i].broken){
+    for (let i = start; i <= end; i++) {
+        if (seats[i].passengerId || seats[i].broken) {
             continue;
-        }else{
+        } else {
             s.push(seats[i].seat);
         }
 
-        if(passengers > 1){
+        if (passengers > 1) {
             counter++;
-            if(counter != s.length){
-                arr[counter-1] = s;
+            if (counter != s.length) {
+                arr[counter - 1] = s;
                 s = [];
                 counter = 0;
                 continue;
             }
 
             let n = Object.keys(arr);
-            let f = n.filter(d=> d == passengers);
-            if(f){
+            let f = n.filter(d => d == passengers);
+            if (f) {
                 return arr[f[0]];
             }
 
-        }else{
-            if(seats[i].column == "B" || seats[i].column == "E"){
+        } else {
+            if (seats[i].column == "B" || seats[i].column == "E") {
                 continue;
-            }else{
+            } else {
                 return seats[i].seat;
             }
             return s[0];
         }
     }
 
+    let a = twoSum(Object.keys(arr), passengers);
+    if (a) {
+        return [...arr[a[0]], ...arr[a[1]]];
+    }
+
+}
+
+
+function twoSum(nums, target) {
+    let m = new Map();
+
+    for (let i = 0; i < nums.length; i++) {
+        let n = target - nums[i];
+        let g = m.get(nums[n]);
+        if (nums[i] + g == target) {
+            return [g, i];
+        } else {
+            m.set(nums[i], i);
+        }
+    }
 }
