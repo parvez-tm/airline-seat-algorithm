@@ -655,7 +655,7 @@ sections.forEach(section => {
     }
 });
 
-console.log(seats);
+// console.log(seats);
 
 // fs.writeFile("seats.json", JSON.stringify(seats, null, 2), err => {
 //     if (err) {
@@ -679,14 +679,24 @@ function getSeat(passengers, type, seniorPassenger) {
     let s = [];
     let counter = 0;
 
-    let start = obj[type].start
-    let end = obj[type].end
+    let start = obj[type]?.start
+    let end = obj[type]?.end
     if (passengers == seniorPassenger) {
         start = obj.eco1.start;
         end = obj.mature.end;
     }
+    if(type == "eco"){
+        start = obj.eco1.start;
+        end = obj.eco2.end;
+    }
+
+    console.log(start, end);
 
     for (let i = start; i <= end; i++) {
+        if(type == "eco" && i == obj.eco1.end){
+            i = obj.eco2.start;
+            continue;
+        }
         if (seats[i].passengerId || seats[i].broken) {
             continue;
         } else {
@@ -704,7 +714,7 @@ function getSeat(passengers, type, seniorPassenger) {
 
             let n = Object.keys(arr);
             let f = n.filter(d => d == passengers);
-            if (f) {
+            if (f.length > 0) {
                 return arr[f[0]];
             }
 
@@ -739,3 +749,5 @@ function twoSum(nums, target) {
         }
     }
 }
+
+console.log(getSeat(3, "eco", 1));
