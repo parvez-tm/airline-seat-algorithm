@@ -655,8 +655,6 @@ sections.forEach(section => {
     }
 });
 
-// console.log(seats);
-
 // fs.writeFile("seats.json", JSON.stringify(seats, null, 2), err => {
 //     if (err) {
 //         console.error("Error writing file:", err);
@@ -690,9 +688,9 @@ function getSeat(passengers, type, seniorPassenger) {
         end = obj.eco2.end;
     }
 
-    console.log(start, end);
-
-    for (let i = start; i <= end; i++) {
+    
+    for (let i = start - 1; i < end; i++) {
+        console.log(i, seats[i].seat, seats[i].type);
         if(type == "eco" && i == obj.eco1.end){
             i = obj.eco2.start;
             continue;
@@ -702,6 +700,7 @@ function getSeat(passengers, type, seniorPassenger) {
         } else {
             s.push(seats[i].seat);
         }
+        // console.log(s);
 
         if (passengers > 1) {
             counter++;
@@ -710,6 +709,9 @@ function getSeat(passengers, type, seniorPassenger) {
                 s = [];
                 counter = 0;
                 continue;
+            }
+            if(s.length == passengers){
+                return s;
             }
 
             let n = Object.keys(arr);
