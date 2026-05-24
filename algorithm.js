@@ -673,9 +673,9 @@ let obj = {
 
 function getSeat(passengers, type, seniorPassenger) {
 
-    let arr = {};
-    let s = [];
-    let counter = 0;
+
+    let currentBlock = []
+    let availableBlocks = []
 
     let start = obj[type]?.start
     let end = obj[type]?.end
@@ -683,56 +683,58 @@ function getSeat(passengers, type, seniorPassenger) {
         start = obj.eco1.start;
         end = obj.mature.end;
     }
-    if(type == "eco"){
+    if (type == "eco") {
         start = obj.eco1.start;
         end = obj.eco2.end;
     }
 
-    
+
     for (let i = start - 1; i < end; i++) {
         console.log(i, seats[i].seat, seats[i].type);
-        if(type == "eco" && i == obj.eco1.end){
-            i = obj.eco2.start;
+        if (type == "eco" && i == obj.eco1.end) {
+            i = obj.eco2.start - 1;
             continue;
         }
         if (seats[i].passengerId || seats[i].broken) {
+            if (currentBlock.length) {
+                availableBlocks.push([...currentBlock]);
+                currentBlock = [];
+            }
             continue;
         } else {
-            s.push(seats[i].seat);
+            currentBlock.push(seats[i].seat);
         }
-        // console.log(s);
 
         if (passengers > 1) {
-            counter++;
-            if (counter != s.length) {
-                arr[counter - 1] = s;
-                s = [];
-                counter = 0;
-                continue;
+            if (
+                currentBlock.length &&
+                seats[i].row !== seats[i - 1].row
+            ) {
+                availableBlocks.push([...currentBlock]);
+                currentBlock = [];
             }
-            if(s.length == passengers){
-                return s;
+            if (currentBlock.length == passengers) {
+                return currentBlock;
             }
 
-            let n = Object.keys(arr);
-            let f = n.filter(d => d == passengers);
+            let n = Object.keys(availableBlocks);
+            let f = availableBlocks.filter(
+                x => x.length === passengers
+            );
             if (f.length > 0) {
-                return arr[f[0]];
+                return availableBlocks[f[0]];
             }
 
         } else {
             if (seats[i].column == "B" || seats[i].column == "E") {
                 continue;
-            } else {
-                return seats[i].seat;
             }
-            return s[0];
         }
     }
 
-    let a = twoSum(Object.keys(arr), passengers);
+    let a = twoSum(Object.keys(availableBlocks), passengers);
     if (a) {
-        return [...arr[a[0]], ...arr[a[1]]];
+        return [...availableBlocks[a[0]], ...availableBlocks[a[1]]];
     }
 
 }
@@ -743,7 +745,7 @@ function twoSum(nums, target) {
 
     for (let i = 0; i < nums.length; i++) {
         let n = target - nums[i];
-        let g = m.get(nums[n]);
+        let g = m.get(n);
         if (nums[i] + g == target) {
             return [g, i];
         } else {
